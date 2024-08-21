@@ -1,14 +1,17 @@
 #include "graph.h"
+#include <cstddef>
 #include<cstring>
 #include<ctime>
 #include<cmath>
 #define GRAPH_ERROR 1
 #define GRAPH_SUCCESS 0
 using namespace std;
+
 graph::graph(){
   v=NULL;n=0;en=0;dm=NULL;nm=0;
   blank=new int;*blank=0;
 }
+
 graph::graph(int n0,int m0){
   v=new int*[n0];n=0;en=0;nm=n0;
   dm=new int[n0];blank=new int;*blank=0;
@@ -18,6 +21,7 @@ graph::graph(int n0,int m0){
     dm[i]=m0;
   }
 }
+
 graph::graph(int n0,int* k){
   v=new int*[n0];n=0;en=0;nm=n0;
   dm=new int[n0];blank=new int;*blank=0;
@@ -27,6 +31,7 @@ graph::graph(int n0,int* k){
     v[i][0]=0;
   }
 }
+
 graph::graph(const graph&_in){
   int d;n=_in.n;en=_in.en;nm=_in.nm;
   blank=new int;*blank=0;
@@ -36,6 +41,7 @@ graph::graph(const graph&_in){
     memcpy(v[i],_in.v[i],sizeof(int)*(dm[i]+1));
   }
 }
+
 graph& graph::operator=(const graph &_in){
   if(&_in==this)return *this;
   for(int i=0;i<n;i++)delete v[i];
@@ -52,6 +58,7 @@ graph& graph::operator=(const graph &_in){
     memcpy(v[i],_in.v[i],sizeof(int)*(dm[i]+1));
   }return *this;
 }
+
 bool graph::link(int from,int to){
   if(from>nm||to>nm)return 0;
   n=n>from?n:from;n=n>to?n:to;
@@ -64,6 +71,7 @@ bool graph::link(int from,int to){
   }v[from][++v[from][0]]=to;en+=1;
   return 1;
 }
+
 bool graph::link(int from,int to,int add){
   if(from>nm||to>nm)return 0;
   n=n>from?n:from;n=n>to?n:to;
@@ -76,11 +84,13 @@ bool graph::link(int from,int to,int add){
   }v[from][++v[from][0]]=to;en+=1;
   return 1;
 }
+
 int graph::del(int point){
   if(v[point][0]==1)return -1;
   int ans=v[point][v[point][0]];
   v[point][0]-=1;en-=1;return ans;
 }
+
 bool graph::del(int point,int link_to){
   if(v[point][0]==0)return 0;
   for(int i=1;i<=v[point][0];i++)
@@ -89,29 +99,34 @@ bool graph::del(int point,int link_to){
       return 1;
     }return 0;
 }
+
 bool graph::check_linked(int point,int link_to){
   bool ans=0;
   for(int i=1;i<=v[point][0];i++)
     if(v[point][i]==link_to)return 1;
   return 0;
 }
-//用完后不要释放空间，一定要置`NULL`
+
 int* graph::get_neighbour(int point){
   if(point<=n)return v[point];
   return blank;
 }
+
 double graph::get_k_mean(){
   return (double)en/(double)nm;
 }
+
 int graph::get_k_max(){
   int ans=0;
   for(int i=0;i<=n;i++)
     if(ans<v[i][0])ans=v[i][0];
   return ans;
 }
+
 int graph::get_k_total(){
   return en;
 }
+
 ostream &operator<<(ostream &_out,graph &picture){
   _out<<picture.n;
   int** v=picture.v;
@@ -121,6 +136,7 @@ ostream &operator<<(ostream &_out,graph &picture){
   }
   return _out;
 }
+
 istream &operator>>(istream &_in,graph &picture){
   picture=graph();
   int n,temp;_in>>n;
@@ -135,14 +151,18 @@ istream &operator>>(istream &_in,graph &picture){
   }
   return _in;
 }
+
 graph::operator bool(){
   if(v==NULL)return 0;
   return 1;
 }
+
 graph::operator int(){
   return nm;
 }
+
 graph::~graph(){
+  if(nm==0)return;
   delete dm;dm=NULL;
   delete blank;blank=NULL;
   for(int i=0;i<nm;i++){
