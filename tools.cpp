@@ -16,6 +16,15 @@ double getCpu(){
   fgets(buffer, BUF, info);
   return std::stod(buffer);
 }
+int getCpuNum(){
+  FILE* info;char cmd[]=
+    "lscpu|grep CPU"
+    "|head -2|tail -1"
+    "|awk '{print $2}'";
+  info=popen(cmd, "r");
+  fgets(buffer, BUF, info);
+  return std::stoi(buffer);
+}
 
 state_arry::state_arry(int stateNum,int n){
   stateNum--;if(stateNum<0)stateNum=-stateNum;cell={0,0};

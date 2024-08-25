@@ -2,6 +2,7 @@
 #define TOOLS
 
 double getCpu();
+int getCpuNum();
 
 class state_arry{
 private:
