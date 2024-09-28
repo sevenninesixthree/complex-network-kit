@@ -15,6 +15,7 @@ double getCpu(){
   info=popen(cmd, "r");
   fgets(buffer, BUF, info);
   fgets(buffer, BUF, info);
+  pclose(info);
   return std::stod(buffer);
 }
 int getCpuNum(){
