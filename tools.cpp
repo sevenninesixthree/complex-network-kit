@@ -1,28 +1,35 @@
 #include "tools.h"
 #include <cstdio>
-#include <string>
 #include <unistd.h>
+#include <fcntl.h>
 
-#define BUF 8
+#define BUF 256
 char buffer[BUF];
+char name[8];
 
+enum CpuColumn{ALL,IDLE};
+
+int getCpuTime(double* reg){
+  int fd=open("/proc/stat", O_RDONLY);
+  if(fd==-1)return fd;read(fd, buffer, BUF);
+  double indate[4];sscanf(buffer, "%s%lf%lf%lf%lf",name,indate,indate+1,indate+2,indate+3);
+  double all=0,idle=indate[3];
+  for(double i:indate)all+=i;
+  reg[ALL]=all;reg[IDLE]=idle;
+  close(fd);
+  return 0;
+}
 double getCpu(){
-  FILE* info;char cmd[]=
-    "top -b -n2 -d0"
-    "|grep %Cpu"
-    "|tr -dc '0-9.\n '"
-    "|awk '{print $1}'";
-  info=popen(cmd, "r");
-  fgets(buffer, BUF, info);
-  fgets(buffer, BUF, info);
-  pclose(info);
-  return std::stod(buffer);
+  double o[2],n[2],all,idle;
+  getCpuTime(o);sleep(1);getCpuTime(n);
+  idle=n[IDLE]-o[IDLE];all=n[ALL]-o[ALL];
+  return (all-idle)/all*100.0;
 }
 int getCpuNum(){
   return sysconf(_SC_NPROCESSORS_ONLN);
 }
 
-state_arry::state_arry(int stateNum,int n){
+/*state_arry::state_arry(int stateNum,int n){
   stateNum--;if(stateNum<0)stateNum=-stateNum;cell={0,0};
   int p=0;while(stateNum){p++;stateNum>>=1;}
   int q=1;while(q<p){q<<=1;cell.shift++;}
@@ -48,4 +55,4 @@ int state_arry::read(int agent){
   data.shift=(agent&self.mask)<<cell.shift;
   data.mask=cell.mask<<data.shift;
   return (storage[pointer]&data.mask)>>data.shift;
-}
+}*/

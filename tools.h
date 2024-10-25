@@ -4,7 +4,7 @@
 double getCpu();
 int getCpuNum();
 
-class state_arry{
+/*class state_arry{
 private:
   unsigned int* storage;
   struct bit_tool{
@@ -16,6 +16,6 @@ public:
   ~state_arry();
   void write(int agent,int state);
   int read(int agent);
-};
+};*/
 
 #endif
