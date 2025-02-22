@@ -25,6 +25,8 @@ public:
   int get_k_total();
   friend std::ostream &operator<<(std::ostream &_out,graph &picture);
   friend std::istream &operator>>(std::istream &_in,graph &picture);
+  int readFile(const char* fileName);
+  int writeFile(const char* fileName);
   operator bool();
   operator int();
   ~graph();

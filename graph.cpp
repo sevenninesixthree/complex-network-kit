@@ -1,8 +1,10 @@
 #include "graph.h"
 #include <cstddef>
-#include<cstring>
-#include<ctime>
-#include<cmath>
+#include <cstring>
+#include <ctime>
+#include <cmath>
+#include <fstream>
+#include <iterator>
 #define GRAPH_ERROR 1
 #define GRAPH_SUCCESS 0
 using namespace std;
@@ -150,6 +152,30 @@ istream &operator>>(istream &_in,graph &picture){
     picture.en+=temp;
   }
   return _in;
+}
+
+int graph::writeFile(const char* fileName){
+  ofstream fout(fileName);
+  if(!fout)return GRAPH_ERROR;
+  fout.write((char*)&n, sizeof(int));
+  for(int i=0;i<=n;i++)
+    fout.write((char*)v[i], sizeof(int)*(v[i][0]+1));
+  fout.close();
+  return GRAPH_SUCCESS;
+}
+
+int graph::readFile(const char* fileName){
+  ifstream fin(fileName);
+  if(!fin)return GRAPH_ERROR;
+  fin.read((char*)&n, sizeof(int));nm=n+1;
+  v=new int*[n+1];dm=new int[n+1];
+  int tmp;
+  for(int i=0;i<=n;i++){
+    fin.read((char*)&tmp, sizeof(int));v[i]=new int[tmp+1];
+    dm[i]=tmp;v[i][0]=tmp;fin.read((char*)(v[i]+1), tmp*sizeof(int));
+    en+=tmp;
+  }
+  return GRAPH_SUCCESS;
 }
 
 graph::operator bool(){

@@ -1,6 +1,6 @@
-#!/bin/gnuplot
+#!/bin/gnuplot -c
 #input picName
-picName="test"
+picName=ARG1
 #logName="'/dev/null'"
 set term epslatex color standalone size 6,5
 set output "tmp.tex"
